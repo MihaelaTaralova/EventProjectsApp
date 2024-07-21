@@ -1,5 +1,4 @@
-﻿
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace EventProject.Domain.Entities
 {
@@ -8,8 +7,10 @@ namespace EventProject.Domain.Entities
         /*GraphicDesign,
       ScenicDesign*/
 
+        [Key]
         public required int Id { get; set; }
 
+        [Required]
         public required string Name { get; set; }
     }
 }

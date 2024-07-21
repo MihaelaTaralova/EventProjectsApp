@@ -1,27 +1,28 @@
-﻿namespace EventProject.Domain.Entities
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace EventProject.Domain.Entities
 {
     public class Designer
     {
         public Designer()
         {
-            this.Projects = new List<Project>();
-            this.GraphicEvaluations = new List<ProjectEvaluation>();
-            this.ScenicEvaluations = new List<ProjectEvaluation>();
+            this.ProjectDesigners = new List<ProjectDesigner>();
         }
+
+        [Key]
         public required int Id { get; set; }
 
+        [Required]
         public required string FirstName { get; set; }
 
         public string? LastName { get; set; }
 
-        public int CategoryDesignerId { get; set; }
+        [ForeignKey(nameof(DesignerCategory))]
+        public int DesignerCategoryId { get; set; }
 
         public virtual required DesignerCategory DesignerCategory { get; set; }
 
-        public virtual ICollection<Project> Projects { get; set; }
-
-        public virtual ICollection<ProjectEvaluation> GraphicEvaluations { get; set; }
-
-        public virtual ICollection<ProjectEvaluation> ScenicEvaluations { get; set; } 
+        public virtual ICollection<ProjectDesigner> ProjectDesigners { get; set; }
     }
 }

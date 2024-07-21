@@ -1,4 +1,6 @@
-﻿namespace EventProject.Domain.Entities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace EventProject.Domain.Entities
 {
     public class ProjectStatus
     {
@@ -8,8 +10,10 @@
         Past,
         Rejected  */
 
+        [Key]
         public required int Id { get; set; }
 
+        [Required]
         public required string Name { get; set; }
     }
 }
