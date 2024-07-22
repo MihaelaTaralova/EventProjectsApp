@@ -1,5 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using static EventProject.Common.EntityValidationConstants.Project;
 
 namespace EventProject.Domain.Entities
 {
@@ -25,6 +27,7 @@ namespace EventProject.Domain.Entities
         public virtual Customer? Customer { get; set; }
 
         [Required]
+        [StringLength(ProjectNameMax), MinLength(ProjectNameMin)]
         public required string ProjectName { get; set; }
 
         public virtual ICollection<ProjectLocation> ProjectLocations { get; set; }
@@ -34,6 +37,8 @@ namespace EventProject.Domain.Entities
 
         public virtual ICollection<ProjectDesigner> ProjectDesigners { get; set; }
 
+        [ForeignKey(nameof(ProjectType))]
+        public int ProjectTypeId { get; set; }
         public virtual ProjectType? ProjectType { get; set; }
 
         [DataType(DataType.Date)]
@@ -44,12 +49,14 @@ namespace EventProject.Domain.Entities
 
         public virtual required ProjectStatus ProjectStatus { get; set; }
 
+        [StringLength(DescriptionMax), MinLength(DescriptionMin)]
         public string? Description { get; set; }
 
         /// <summary>
         /// This date is for handover if after the first handover corrections are made
         /// </summary>
         [DataType(DataType.Date)]
+        //[Comment("If corrections are made on submitted project this is the new date for handover")]
         public DateTime? HandoverAfterCorrectionDate { get; set; }
 
         public List<int> NumberCorrections { get; set; }
@@ -59,8 +66,9 @@ namespace EventProject.Domain.Entities
 
         public virtual required ProjectManager ProjectManager { get; set; }    
         
-        public virtual List<PrintMaterials>? PrintMaterials { get; set; } 
+        public virtual List<PrintMaterials>? PrintMaterials { get; set; }
 
+        [StringLength(CommentsMax), MinLength(CommentsMin)]
         public string? Comments { get; set; }
 
 

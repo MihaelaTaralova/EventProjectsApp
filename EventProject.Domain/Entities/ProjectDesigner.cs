@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EventProject.Domain.Entities
 {
@@ -20,6 +21,7 @@ namespace EventProject.Domain.Entities
         /// <summary>
         /// Evaluation for the specific designer in this project
         /// </summary>
+        [RegularExpression(@"^(10|[1-9])$", ErrorMessage = "The evaluation should be between 1 and 10")]
         public int? Evaluation { get; set; } 
     }
 }

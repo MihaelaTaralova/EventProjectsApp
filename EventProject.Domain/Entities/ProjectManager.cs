@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using static EventProject.Common.EntityValidationConstants.ProjectManager;
 
 namespace EventProject.Domain.Entities
 {
@@ -13,8 +14,10 @@ namespace EventProject.Domain.Entities
         public required int Id { get; set; }
 
         [Required]
+        [StringLength(FirstNameMax), MinLength(FirstNameMin)]
         public required string FirstName { get; set; }
 
+        [StringLength(LastNameMax), MinLength(LastNameMin)]
         public string? LastName { get; set; } = null;
 
         public virtual ICollection<Project> Projects { get; set; } 

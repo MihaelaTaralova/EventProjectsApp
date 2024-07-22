@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using static EventProject.Common.EntityValidationConstants.Designer;
 
 namespace EventProject.Domain.Entities
 {
@@ -14,8 +15,10 @@ namespace EventProject.Domain.Entities
         public required int Id { get; set; }
 
         [Required]
+        [StringLength(FirstNameMax), MinLength(FirstNameMin)]
         public required string FirstName { get; set; }
 
+        [StringLength(LastNameMax), MinLength(LastNameMin)]
         public string? LastName { get; set; }
 
         [ForeignKey(nameof(DesignerCategory))]
