@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using EventProject.Domain.Entities.Account;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using static EventProject.Common.EntityValidationConstants.Project;
@@ -61,11 +61,11 @@ namespace EventProject.Domain.Entities
 
         public List<int> NumberCorrections { get; set; }
 
-        [ForeignKey(nameof(ProjectManager))]
-        public int ProjectManagerId { get; set; }
+        // Свързване с ApplicationUser като Project Manager
+        [ForeignKey(nameof(ApplicationUser))]
+        public Guid ProjectManagerId { get; set; }
+        public virtual required ApplicationUser ProjectManager { get; set; }
 
-        public virtual required ProjectManager ProjectManager { get; set; }    
-        
         public virtual List<PrintMaterials>? PrintMaterials { get; set; }
 
         [StringLength(CommentsMax), MinLength(CommentsMin)]

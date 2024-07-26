@@ -62,16 +62,6 @@
             public const int DescriptionMin = 5;
 
         }
-
-        public static class ProjectManager
-        {
-            public const int FirstNameMax = 30;
-            public const int FirstNameMin = 2;
-
-            public const int LastNameMax = 30;
-            public const int LastNameMin = 3;
-        }
-
         public static class ProjectStatus
         {
             public const int NameMax = 15;
@@ -85,6 +75,18 @@
 
             public const int DescriptionMax = 300;
             public const int DescriptionMin = 5;
+        }
+
+        public static class ApplicationUser
+        {
+            public const int UserNameMax = 15;
+            public const int UserNameMin = 3;
+
+            public const int FirstNameMax = 30;
+            public const int FirstNameMin = 2;
+
+            public const int LastNameMax = 30;
+            public const int LastNameMin = 2;
         }
     }
 }

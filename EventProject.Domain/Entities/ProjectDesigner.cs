@@ -10,7 +10,7 @@ namespace EventProject.Domain.Entities
         public required Project Project { get; set; }
 
         [ForeignKey(nameof(Designer))]
-        public int DesignerId { get; set; }
+        public Guid DesignerId { get; set; }
         public required Designer Designer { get; set; }
 
         /// <summary>

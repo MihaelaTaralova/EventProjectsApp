@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using static EventProject.Common.EntityValidationConstants.Customer;
 
 namespace EventProject.Domain.Entities

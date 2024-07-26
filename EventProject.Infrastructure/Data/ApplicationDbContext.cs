@@ -1,11 +1,14 @@
 ﻿using EventProject.Domain.Entities;
+using EventProject.Domain.Entities.Account;
 using EventProject.Infrastructure.Data.EntityConfigurations;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 
 namespace EventProject.Infrastructure.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
@@ -27,11 +30,11 @@ namespace EventProject.Infrastructure.Data
 
         public DbSet<ProjectLocation> ProjectsLocations { get; set; } = null!;
 
-        public DbSet<ProjectManager> ProjectManagers { get; set; } = null!;
-
         public DbSet<ProjectStatus> ProjectStatus { get; set; } = null!;
 
         public DbSet<ProjectType> ProjectTypes { get; set; } = null!;
+
+        public DbSet<ApplicationUser> ApplicationUsers { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -41,7 +44,6 @@ namespace EventProject.Infrastructure.Data
             builder.ApplyConfiguration<Project>(new ProjectConfiguration());
             builder.ApplyConfiguration<ProjectDesigner>(new ProjectDesignerConfiguration());
             builder.ApplyConfiguration<ProjectLocation>(new ProjectLocationConfiguration());
-            builder.ApplyConfiguration<ProjectManager>(new  ProjectManagerConfiguration());
 
             base.OnModelCreating(builder);
         }
