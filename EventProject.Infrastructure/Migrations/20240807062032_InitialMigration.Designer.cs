@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventProject.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240726062831_Initial")]
-    partial class Initial
+    [Migration("20240807062032_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,34 @@ namespace EventProject.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("EventProject.Domain.Entities.Account.ApplicationRole", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("AspNetRoles", (string)null);
+                });
 
             modelBuilder.Entity("EventProject.Domain.Entities.Account.ApplicationUser", b =>
                 {
@@ -78,6 +106,12 @@ namespace EventProject.Infrastructure.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<int?>("ProjectId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ProjectId1")
+                        .HasColumnType("int");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -97,6 +131,10 @@ namespace EventProject.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("ProjectId");
+
+                    b.HasIndex("ProjectId1");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -133,22 +171,7 @@ namespace EventProject.Infrastructure.Migrations
                     b.ToTable("Customers");
                 });
 
-            modelBuilder.Entity("EventProject.Domain.Entities.Designer", b =>
-                {
-                    b.Property<Guid>("ApplicationUserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("DesignerCategoryId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ApplicationUserId");
-
-                    b.HasIndex("DesignerCategoryId");
-
-                    b.ToTable("Designers");
-                });
-
-            modelBuilder.Entity("EventProject.Domain.Entities.DesignerCategory", b =>
+            modelBuilder.Entity("EventProject.Domain.Entities.Evaluation", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -156,13 +179,15 @@ namespace EventProject.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Name")
-                        .IsRequired()
+                    b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.ToTable("DesignersCategories");
+                    b.ToTable("Evaluations");
                 });
 
             modelBuilder.Entity("EventProject.Domain.Entities.Location", b =>
@@ -205,40 +230,43 @@ namespace EventProject.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("ContactName")
-                        .HasMaxLength(60)
-                        .HasColumnType("nvarchar(60)");
-
                     b.Property<string>("Description")
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
 
-                    b.Property<string>("PersonReleasedMaterials")
+                    b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PrintMaterials");
+                });
+
+            modelBuilder.Entity("EventProject.Domain.Entities.PrintingHouse", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ContactName")
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
+
+                    b.Property<string>("MobilePhone")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PrintingHouseName")
                         .IsRequired()
                         .HasMaxLength(60)
                         .HasColumnType("nvarchar(60)");
 
-                    b.Property<int>("ProjectId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ProjectId1")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("ReleaseDate")
-                        .HasColumnType("datetime2");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("ProjectId");
-
-                    b.HasIndex("ProjectId1");
-
-                    b.ToTable("PrintMaterials");
+                    b.ToTable("PrintingHouses");
                 });
 
             modelBuilder.Entity("EventProject.Domain.Entities.Project", b =>
@@ -266,15 +294,24 @@ namespace EventProject.Infrastructure.Migrations
                     b.Property<DateTime?>("EventDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("GraphicDesignerEvaluationID")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("HandoverAfterCorrectionDate")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("HandoverDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("NumberCorrections")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("NumberCorrections")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("PersonReleasedMaterialsId")
+                        .HasMaxLength(30)
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("PrintMaterialsReleaseDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("ProjectManagerId")
                         .HasColumnType("uniqueidentifier");
@@ -290,9 +327,16 @@ namespace EventProject.Infrastructure.Migrations
                     b.Property<int>("ProjectTypeId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("ScenicDesignerEvaluationId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
+
+                    b.HasIndex("GraphicDesignerEvaluationID");
+
+                    b.HasIndex("PersonReleasedMaterialsId");
 
                     b.HasIndex("ProjectManagerId");
 
@@ -300,28 +344,29 @@ namespace EventProject.Infrastructure.Migrations
 
                     b.HasIndex("ProjectTypeId");
 
+                    b.HasIndex("ScenicDesignerEvaluationId");
+
                     b.ToTable("Projects");
                 });
 
-            modelBuilder.Entity("EventProject.Domain.Entities.ProjectDesigner", b =>
+            modelBuilder.Entity("EventProject.Domain.Entities.ProjectEvaluation", b =>
                 {
                     b.Property<int>("ProjectId")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("DesignerId")
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int?>("Evaluation")
+                    b.Property<int>("EvaluationId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsGraphicDesigner")
-                        .HasColumnType("bit");
+                    b.HasKey("ProjectId", "UserId", "EvaluationId");
 
-                    b.HasKey("ProjectId", "DesignerId");
+                    b.HasIndex("EvaluationId");
 
-                    b.HasIndex("DesignerId");
+                    b.HasIndex("UserId");
 
-                    b.ToTable("ProjectsDesigners");
+                    b.ToTable("ProjectEvaluations");
                 });
 
             modelBuilder.Entity("EventProject.Domain.Entities.ProjectLocation", b =>
@@ -337,6 +382,29 @@ namespace EventProject.Infrastructure.Migrations
                     b.HasIndex("LocationId");
 
                     b.ToTable("ProjectsLocations");
+                });
+
+            modelBuilder.Entity("EventProject.Domain.Entities.ProjectMaterials", b =>
+                {
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MaterialId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PrintingHouseId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Number")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProjectId", "MaterialId", "PrintingHouseId");
+
+                    b.HasIndex("MaterialId");
+
+                    b.HasIndex("PrintingHouseId");
+
+                    b.ToTable("ProjectMaterials");
                 });
 
             modelBuilder.Entity("EventProject.Domain.Entities.ProjectStatus", b =>
@@ -377,34 +445,6 @@ namespace EventProject.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ProjectTypes");
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedName")
-                        .IsUnique()
-                        .HasDatabaseName("RoleNameIndex")
-                        .HasFilter("[NormalizedName] IS NOT NULL");
-
-                    b.ToTable("AspNetRoles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -510,38 +550,15 @@ namespace EventProject.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("EventProject.Domain.Entities.Designer", b =>
+            modelBuilder.Entity("EventProject.Domain.Entities.Account.ApplicationUser", b =>
                 {
-                    b.HasOne("EventProject.Domain.Entities.Account.ApplicationUser", "ApplicationUser")
-                        .WithMany()
-                        .HasForeignKey("ApplicationUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EventProject.Domain.Entities.DesignerCategory", "DesignerCategory")
-                        .WithMany()
-                        .HasForeignKey("DesignerCategoryId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("ApplicationUser");
-
-                    b.Navigation("DesignerCategory");
-                });
-
-            modelBuilder.Entity("EventProject.Domain.Entities.PrintMaterials", b =>
-                {
-                    b.HasOne("EventProject.Domain.Entities.Project", "Project")
-                        .WithMany()
-                        .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                    b.HasOne("EventProject.Domain.Entities.Project", null)
+                        .WithMany("GraphicDesigner")
+                        .HasForeignKey("ProjectId");
 
                     b.HasOne("EventProject.Domain.Entities.Project", null)
-                        .WithMany("PrintMaterials")
+                        .WithMany("ScenicDesigner")
                         .HasForeignKey("ProjectId1");
-
-                    b.Navigation("Project");
                 });
 
             modelBuilder.Entity("EventProject.Domain.Entities.Project", b =>
@@ -552,10 +569,19 @@ namespace EventProject.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("EventProject.Domain.Entities.Evaluation", "GraphicDesignerEvaluation")
+                        .WithMany()
+                        .HasForeignKey("GraphicDesignerEvaluationID")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("EventProject.Domain.Entities.Account.ApplicationUser", "PersonReleasedMaterials")
+                        .WithMany()
+                        .HasForeignKey("PersonReleasedMaterialsId");
+
                     b.HasOne("EventProject.Domain.Entities.Account.ApplicationUser", "ProjectManager")
                         .WithMany("Projects")
                         .HasForeignKey("ProjectManagerId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("EventProject.Domain.Entities.ProjectStatus", "ProjectStatus")
@@ -570,32 +596,51 @@ namespace EventProject.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("EventProject.Domain.Entities.Evaluation", "ScenicDesignerEvaluation")
+                        .WithMany()
+                        .HasForeignKey("ScenicDesignerEvaluationId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.Navigation("Customer");
+
+                    b.Navigation("GraphicDesignerEvaluation");
+
+                    b.Navigation("PersonReleasedMaterials");
 
                     b.Navigation("ProjectManager");
 
                     b.Navigation("ProjectStatus");
 
                     b.Navigation("ProjectType");
+
+                    b.Navigation("ScenicDesignerEvaluation");
                 });
 
-            modelBuilder.Entity("EventProject.Domain.Entities.ProjectDesigner", b =>
+            modelBuilder.Entity("EventProject.Domain.Entities.ProjectEvaluation", b =>
                 {
-                    b.HasOne("EventProject.Domain.Entities.Designer", "Designer")
-                        .WithMany("ProjectDesigners")
-                        .HasForeignKey("DesignerId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                    b.HasOne("EventProject.Domain.Entities.Evaluation", "Evaluation")
+                        .WithMany()
+                        .HasForeignKey("EvaluationId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("EventProject.Domain.Entities.Project", "Project")
-                        .WithMany("ProjectDesigners")
+                        .WithMany()
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Designer");
+                    b.HasOne("EventProject.Domain.Entities.Account.ApplicationUser", "User")
+                        .WithMany("ProjectsEvaluations")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Evaluation");
 
                     b.Navigation("Project");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("EventProject.Domain.Entities.ProjectLocation", b =>
@@ -617,9 +662,36 @@ namespace EventProject.Infrastructure.Migrations
                     b.Navigation("Project");
                 });
 
+            modelBuilder.Entity("EventProject.Domain.Entities.ProjectMaterials", b =>
+                {
+                    b.HasOne("EventProject.Domain.Entities.PrintMaterials", "Material")
+                        .WithMany()
+                        .HasForeignKey("MaterialId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EventProject.Domain.Entities.PrintingHouse", "PrintingHouse")
+                        .WithMany()
+                        .HasForeignKey("PrintingHouseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EventProject.Domain.Entities.Project", "Project")
+                        .WithMany("ProjectMaterials")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Material");
+
+                    b.Navigation("PrintingHouse");
+
+                    b.Navigation("Project");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", null)
+                    b.HasOne("EventProject.Domain.Entities.Account.ApplicationRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -646,7 +718,7 @@ namespace EventProject.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", null)
+                    b.HasOne("EventProject.Domain.Entities.Account.ApplicationRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -671,16 +743,13 @@ namespace EventProject.Infrastructure.Migrations
             modelBuilder.Entity("EventProject.Domain.Entities.Account.ApplicationUser", b =>
                 {
                     b.Navigation("Projects");
+
+                    b.Navigation("ProjectsEvaluations");
                 });
 
             modelBuilder.Entity("EventProject.Domain.Entities.Customer", b =>
                 {
                     b.Navigation("Projects");
-                });
-
-            modelBuilder.Entity("EventProject.Domain.Entities.Designer", b =>
-                {
-                    b.Navigation("ProjectDesigners");
                 });
 
             modelBuilder.Entity("EventProject.Domain.Entities.Location", b =>
@@ -690,11 +759,13 @@ namespace EventProject.Infrastructure.Migrations
 
             modelBuilder.Entity("EventProject.Domain.Entities.Project", b =>
                 {
-                    b.Navigation("PrintMaterials");
-
-                    b.Navigation("ProjectDesigners");
+                    b.Navigation("GraphicDesigner");
 
                     b.Navigation("ProjectLocations");
+
+                    b.Navigation("ProjectMaterials");
+
+                    b.Navigation("ScenicDesigner");
                 });
 #pragma warning restore 612, 618
         }

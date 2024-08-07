@@ -21,6 +21,24 @@ namespace EventProject.Infrastructure.Data.EntityConfigurations
                 .WithMany()
                 .HasForeignKey(p => p.ProjectTypeId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            builder
+                .HasOne(p => p.GraphicDesignerEvaluation)
+                .WithMany()
+                .HasForeignKey(p => p.GraphicDesignerEvaluationID)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder
+                .HasOne(p => p.ScenicDesignerEvaluation)
+                .WithMany()
+                .HasForeignKey(p => p.ScenicDesignerEvaluationId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder
+                .HasOne(u => u.ProjectManager)
+                .WithMany()
+                .HasForeignKey(u => u.ProjectManagerId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

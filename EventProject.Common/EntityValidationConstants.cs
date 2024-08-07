@@ -25,18 +25,22 @@
 
         public static class PrintMaterials
         {
+            public const int NameMax = 100;
+            public const int NameMin = 3;
+
+            public const int DescriptionMax = 300;
+            public const int DescriptionMin = 5;
+        }
+
+        public static class PrintingHouse
+        {
             public const int PrintingHouseNameMax = 60;
             public const int PrintingHouseNameMin = 3;
 
             public const int ContactNameMax = 60;
             public const int ContactNameMin = 2;
-
-            public const int PersonReleasedMaterialsMax = 30;
-            public const int PersonReleasedMaterialsMin = 2;
-
-            public const int DescriptionMax = 300;
-            public const int DescriptionMin = 5;
         }
+
 
         public static class Project
         {
@@ -48,6 +52,9 @@
 
             public const int CommentsMax = 400;
             public const int CommentsMin = 5;
+
+            public const int PersonReleasedMaterialsMax = 30;
+            public const int PersonReleasedMaterialsMin = 2;
         }
 
         public static class Location
@@ -79,7 +86,7 @@
 
         public static class ApplicationUser
         {
-            public const int UserNameMax = 15;
+            public const int UserNameMax = 20;
             public const int UserNameMin = 3;
 
             public const int FirstNameMax = 30;

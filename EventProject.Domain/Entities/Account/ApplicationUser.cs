@@ -9,7 +9,8 @@ namespace EventProject.Domain.Entities.Account
         public ApplicationUser()
         {
             this.Id = Guid.NewGuid();
-            this.Projects = new List<Project>();    
+            this.Projects = new List<Project>();
+            this.ProjectsEvaluations = new List<ProjectEvaluation>(); 
         }
 
         [Required]
@@ -19,6 +20,8 @@ namespace EventProject.Domain.Entities.Account
         [Required]
         [MaxLength(LastNameMax)]
         public string LastName { get; set; } = null!;
+
+        public virtual ICollection<ProjectEvaluation>? ProjectsEvaluations { get; set; }
 
         public virtual ICollection<Project> Projects { get; set; }
     }

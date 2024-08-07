@@ -22,4 +22,8 @@
     <ProjectReference Include="..\EventProject.Infrastructure\EventProject.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Views\Account\" />
+  </ItemGroup>
+
 </Project>
